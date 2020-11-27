@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-service
+  labels:
+    app: airflow
+spec:
+  ports:
+    - name: airflow
+      port: 8080
+  type: NodePort
+  selector:
+    app: airflow-scheduler

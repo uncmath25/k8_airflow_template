@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler-deployment
+  labels:
+    app: airflow-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler
+    spec:
+      containers:
+        - name: airflow-scheduler
+          image: uncmath25/k8-airflow-template
+          imagePullPolicy: Never
+          args: ["scheduler"]
+          envFrom:
+            - configMapRef:
+                name: airflow-config
+        - name: airflow-webserver
+          image: uncmath25/k8-airflow-template
+          imagePullPolicy: Never
+          args: ["webserver"]
+          envFrom:
+            - configMapRef:
+                name: airflow-config
+          ports:
+            - name: airflow-web
+              containerPort: 8080
+      restartPolicy: Always

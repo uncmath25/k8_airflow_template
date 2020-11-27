@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-worker-deployment
+  labels:
+    app: airflow-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: airflow-worker
+  template:
+    metadata:
+      labels:
+        app: airflow-worker
+    spec:
+      containers:
+        - name: airflow-worker
+          image: uncmath25/k8-airflow-template
+          imagePullPolicy: Never
+          args: ["worker"]
+          envFrom:
+            - configMapRef:
+                name: airflow-config
+      restartPolicy: Always

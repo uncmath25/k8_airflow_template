@@ -1,0 +1,63 @@
+# Managing minikube
+minikube status
+minikube start
+minikube dashboard
+minikube stop
+minikube delete
+
+# K8 cluster info
+kubectl cluster-info
+kubectl config view
+minikube addons list
+kubectl get po -A
+kubectl describe po -A
+kubectl get deployments -A
+kubectl get deployments -n kube-system
+kubectl get svc
+kubectl get rs
+
+# Example Deployment
+kubectl create deploy hello-minikube --image=k8s.gcr.io/echoserver:1.4
+kubectl expose deploy hello-minikube --type=NodePort --port=8080
+kubectl port-forward service/hello-minikube 7080:8080
+kubectl scale deploy hello-minikube --replicas=2
+kubectl delete service hello-minikube
+kubectl delete deploy hello-minikube
+kubectl set image deploy hello-minikube $NEW_IMAGE
+kubectl rollout status deploy hello-minikube
+kubectl rollout undo deploy hello-minikube
+
+# Misc
+export POD_NAME=$(kubectl get pods -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+echo "Name of the Pod: $POD_NAME"
+kubectl logs $POD_NAME
+kubectl exec -it $POD_NAME bash
+kubectl exec -it $POD_NAME -c $CONTAINER_NAME bash
+export NODE_PORT=$(kubectl get services/kubernetes-bootcamp -o go-template='{{(index .spec.ports 0).nodePort}}')
+curl $(minikube ip):$NODE_PORT
+
+# Misc Airflow
+kubectl get pv
+kubectl delete pv $PV_NAME
+minikube ssh
+minikube service --url postgres-service
+minikube service --url redis-service
+minikube service --url airflow-service
+psql -h 192.168.49.2 -p 30610 -U airflow -d airflow
+\l \dn \dt
+redis-cli -h 192.168.49.2 -p 32492 -a redispass
+kubectl delete pv $(POSTGRES_DATA_VOLUME) --ignore-not-found
+minikube mount $(pwd)/${POSTGRES_DATA_VOLUME}:/data/${POSTGRES_DATA_VOLUME}
+
+# Resources
+https://minikube.sigs.k8s.io/docs/start/
+https://kubernetes.io/docs/tutorials/hello-minikube/
+https://medium.com/faun/kubectl-commands-cheatsheet-43ce8f13adfb
+
+https://www.appdynamics.com/blog/product/migrating-from-docker-compose-to-kubernetes/
+
+https://kubernetes.io/docs/home/
+https://kubernetes.io/docs/concepts/
+https://kubernetes.io/docs/concepts/overview/working-with-objects/
+https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/
+https://kubernetes.io/docs/tutorials/kubernetes-basics/
